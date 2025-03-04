@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, Menu, X, Search, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,10 @@ import { Button } from '@/components/ui/button';
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  // Demo cart count
+  const cartItemCount = 2;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +23,11 @@ const Header = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <header 
@@ -41,16 +50,28 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-sm font-medium text-foreground/90 hover:text-foreground transition-colors link-hover">
+            <Link to="/" className={cn(
+              "text-sm font-medium text-foreground/90 hover:text-foreground transition-colors link-hover",
+              location.pathname === "/" && "text-foreground font-semibold"
+            )}>
               Главная
             </Link>
-            <Link to="/catalog" className="text-sm font-medium text-foreground/90 hover:text-foreground transition-colors link-hover">
+            <Link to="/catalog" className={cn(
+              "text-sm font-medium text-foreground/90 hover:text-foreground transition-colors link-hover",
+              location.pathname === "/catalog" && "text-foreground font-semibold"
+            )}>
               Каталог
             </Link>
-            <Link to="/brands" className="text-sm font-medium text-foreground/90 hover:text-foreground transition-colors link-hover">
+            <Link to="/brands" className={cn(
+              "text-sm font-medium text-foreground/90 hover:text-foreground transition-colors link-hover",
+              location.pathname === "/brands" && "text-foreground font-semibold"
+            )}>
               Бренды
             </Link>
-            <Link to="/about" className="text-sm font-medium text-foreground/90 hover:text-foreground transition-colors link-hover">
+            <Link to="/about" className={cn(
+              "text-sm font-medium text-foreground/90 hover:text-foreground transition-colors link-hover",
+              location.pathname === "/about" && "text-foreground font-semibold"
+            )}>
               О нас
             </Link>
           </nav>
@@ -63,9 +84,15 @@ const Header = () => {
             <Button variant="ghost" size="icon" className="rounded-full transition-all hover:bg-secondary">
               <User className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="rounded-full transition-all hover:bg-secondary">
-              <ShoppingBag className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] bg-primary text-primary-foreground rounded-full">0</span>
+            <Button variant="ghost" size="icon" className="rounded-full transition-all hover:bg-secondary" asChild>
+              <Link to="/cart">
+                <ShoppingBag className="w-5 h-5" />
+                {cartItemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] bg-primary text-primary-foreground rounded-full">
+                    {cartItemCount}
+                  </span>
+                )}
+              </Link>
             </Button>
           </div>
 
@@ -93,28 +120,40 @@ const Header = () => {
           <nav className="flex flex-col space-y-8 pt-6">
             <Link 
               to="/" 
-              className="text-3xl font-medium"
+              className={cn(
+                "text-3xl font-medium",
+                location.pathname === "/" && "text-primary"
+              )}
               onClick={() => setIsMenuOpen(false)}
             >
               Главная
             </Link>
             <Link 
               to="/catalog" 
-              className="text-3xl font-medium"
+              className={cn(
+                "text-3xl font-medium",
+                location.pathname === "/catalog" && "text-primary"
+              )}
               onClick={() => setIsMenuOpen(false)}
             >
               Каталог
             </Link>
             <Link 
               to="/brands" 
-              className="text-3xl font-medium"
+              className={cn(
+                "text-3xl font-medium",
+                location.pathname === "/brands" && "text-primary"
+              )}
               onClick={() => setIsMenuOpen(false)}
             >
               Бренды
             </Link>
             <Link 
               to="/about" 
-              className="text-3xl font-medium"
+              className={cn(
+                "text-3xl font-medium",
+                location.pathname === "/about" && "text-primary"
+              )}
               onClick={() => setIsMenuOpen(false)}
             >
               О нас
@@ -128,9 +167,15 @@ const Header = () => {
             <Button variant="ghost" size="icon" className="w-14 h-14 rounded-full">
               <User className="w-6 h-6" />
             </Button>
-            <Button variant="ghost" size="icon" className="w-14 h-14 rounded-full">
-              <ShoppingBag className="w-6 h-6" />
-              <span className="absolute top-3 right-3 flex items-center justify-center w-5 h-5 text-xs bg-primary text-primary-foreground rounded-full">0</span>
+            <Button variant="ghost" size="icon" className="w-14 h-14 rounded-full" asChild>
+              <Link to="/cart" onClick={() => setIsMenuOpen(false)}>
+                <ShoppingBag className="w-6 h-6" />
+                {cartItemCount > 0 && (
+                  <span className="absolute top-3 right-3 flex items-center justify-center w-5 h-5 text-xs bg-primary text-primary-foreground rounded-full">
+                    {cartItemCount}
+                  </span>
+                )}
+              </Link>
             </Button>
           </div>
         </div>
