@@ -2,10 +2,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
-import { Product, products } from '@/assets/data';
+import { Product, products, brands, categories } from '@/assets/data';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 
 interface SearchTabProps {
   onClose: () => void;
@@ -14,6 +13,8 @@ interface SearchTabProps {
 export const SearchTab = ({ onClose }: SearchTabProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [brandResults, setBrandResults] = useState<typeof brands>([]);
+  const [categoryResults, setCategoryResults] = useState<typeof categories>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Handle click outside to close
@@ -44,21 +45,38 @@ export const SearchTab = ({ onClose }: SearchTabProps) => {
     };
   }, [onClose]);
 
-  // Filter products based on search query
+  // Filter products, brands, and categories based on search query
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setSearchResults([]);
+      setBrandResults([]);
+      setCategoryResults([]);
       return;
     }
 
     const query = searchQuery.toLowerCase();
-    const filtered = products.filter((product) => 
+    
+    // Filter products
+    const filteredProducts = products.filter((product) => 
       product.name.toLowerCase().includes(query) || 
       product.brand.toLowerCase().includes(query) ||
       product.description?.toLowerCase().includes(query)
     );
-
-    setSearchResults(filtered);
+    setSearchResults(filteredProducts);
+    
+    // Filter brands
+    const filteredBrands = brands.filter((brand) =>
+      brand.name.toLowerCase().includes(query)
+    );
+    setBrandResults(filteredBrands);
+    
+    // Filter categories
+    const filteredCategories = categories.filter((category) =>
+      category.name.toLowerCase().includes(query) ||
+      category.label.toLowerCase().includes(query)
+    );
+    setCategoryResults(filteredCategories);
+    
   }, [searchQuery]);
 
   return (
@@ -84,8 +102,76 @@ export const SearchTab = ({ onClose }: SearchTabProps) => {
           />
           <CommandList className="max-h-[50vh] overflow-auto py-2">
             <CommandEmpty>Ничего не найдено.</CommandEmpty>
+            
+            {/* Brands search results */}
+            {brandResults.length > 0 && (
+              <CommandGroup heading="Бренды">
+                {brandResults.map((brand) => (
+                  <CommandItem 
+                    key={`brand-${brand.id}`} 
+                    value={`brand-${brand.id}`}
+                    className="cursor-pointer py-3"
+                    onSelect={() => {
+                      onClose();
+                    }}
+                  >
+                    <Link 
+                      to={`/catalog?brand=${brand.name}`} 
+                      className="flex items-center w-full"
+                      onClick={onClose}
+                    >
+                      <div className="w-12 h-12 rounded bg-secondary/40 flex-shrink-0 mr-4 overflow-hidden">
+                        {brand.image && (
+                          <img 
+                            src={brand.image} 
+                            alt={brand.name} 
+                            className="w-full h-full object-contain"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium">{brand.name}</div>
+                        <div className="text-sm text-muted-foreground">Бренд</div>
+                      </div>
+                    </Link>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+            
+            {/* Categories search results */}
+            {categoryResults.length > 0 && (
+              <CommandGroup heading="Категории">
+                {categoryResults.map((category) => (
+                  <CommandItem 
+                    key={`category-${category.id}`} 
+                    value={`category-${category.id}`}
+                    className="cursor-pointer py-3"
+                    onSelect={() => {
+                      onClose();
+                    }}
+                  >
+                    <Link 
+                      to={`/catalog?category=${category.name}`} 
+                      className="flex items-center w-full"
+                      onClick={onClose}
+                    >
+                      <div className="flex-1">
+                        <div className="font-medium">{category.label}</div>
+                        <div className="text-sm text-muted-foreground">Категория</div>
+                      </div>
+                    </Link>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+            
+            {/* Products search results */}
             {searchResults.length > 0 && (
-              <CommandGroup heading="Результаты поиска">
+              <CommandGroup heading="Товары">
                 {searchResults.map((product) => (
                   <CommandItem 
                     key={product.id} 
@@ -128,7 +214,8 @@ export const SearchTab = ({ onClose }: SearchTabProps) => {
                 ))}
               </CommandGroup>
             )}
-            {searchQuery.trim() !== '' && searchResults.length === 0 && (
+            
+            {searchQuery.trim() !== '' && searchResults.length === 0 && brandResults.length === 0 && categoryResults.length === 0 && (
               <div className="px-2 py-6 text-center">
                 <p className="text-muted-foreground">По запросу "{searchQuery}" ничего не найдено.</p>
                 <p className="text-sm mt-2">Попробуйте изменить запрос или перейти в <Link to="/catalog" className="text-primary hover:underline" onClick={onClose}>каталог товаров</Link>.</p>

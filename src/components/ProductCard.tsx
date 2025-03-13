@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag } from 'lucide-react';
@@ -12,12 +12,20 @@ interface ProductCardProps {
   product: Product;
   index?: number;
   onAddToCart?: (product: Product) => void;
+  onAddToWishlist?: (product: Product) => void;
 }
 
-const ProductCard = ({ product, index = 0, onAddToCart }: ProductCardProps) => {
+const ProductCard = ({ product, index = 0, onAddToCart, onAddToWishlist }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+
+  useEffect(() => {
+    // Check if product is in wishlist
+    const wishlistItems = JSON.parse(localStorage.getItem('wishlistItems') || '[]');
+    setIsInWishlist(wishlistItems.some((item: number) => item === product.id));
+  }, [product.id]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('ru-RU', {
@@ -59,7 +67,33 @@ const ProductCard = ({ product, index = 0, onAddToCart }: ProductCardProps) => {
   };
 
   const handleAddToWishlist = () => {
-    toast.success(`${product.name} добавлен в избранное`);
+    // Update local state
+    setIsInWishlist(!isInWishlist);
+    
+    // Get current wishlist
+    const wishlistItems = JSON.parse(localStorage.getItem('wishlistItems') || '[]');
+    
+    if (isInWishlist) {
+      // Remove from wishlist
+      const updatedWishlist = wishlistItems.filter((id: number) => id !== product.id);
+      localStorage.setItem('wishlistItems', JSON.stringify(updatedWishlist));
+      toast.success(`${product.name} удален из избранного`);
+    } else {
+      // Add to wishlist if not already there
+      if (!wishlistItems.includes(product.id)) {
+        wishlistItems.push(product.id);
+        localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
+        toast.success(`${product.name} добавлен в избранное`);
+      }
+    }
+    
+    // Dispatch custom event to notify components about wishlist changes
+    window.dispatchEvent(new Event('wishlistUpdated'));
+    
+    // Call passed handler if exists
+    if (onAddToWishlist) {
+      onAddToWishlist(product);
+    }
   };
 
   return (
@@ -112,12 +146,21 @@ const ProductCard = ({ product, index = 0, onAddToCart }: ProductCardProps) => {
             isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           )}>
             <div className="flex gap-2 px-4">
-              <Button size="sm" className="rounded-full bg-white/90 text-foreground hover:bg-white" onClick={(e) => {
-                e.preventDefault();
-                handleAddToWishlist();
-              }}>
-                <Heart className="w-4 h-4 mr-1" />
-                <span className="text-xs">В избранное</span>
+              <Button 
+                size="sm" 
+                className={cn(
+                  "rounded-full text-foreground",
+                  isInWishlist 
+                    ? "bg-primary/90 text-primary-foreground hover:bg-primary" 
+                    : "bg-white/90 hover:bg-white"
+                )}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleAddToWishlist();
+                }}
+              >
+                <Heart className={cn("w-4 h-4 mr-1", isInWishlist && "fill-current")} />
+                <span className="text-xs">{isInWishlist ? 'В избранном' : 'В избранное'}</span>
               </Button>
               <Button size="sm" className="rounded-full bg-primary/90 hover:bg-primary" onClick={(e) => {
                 e.preventDefault();
