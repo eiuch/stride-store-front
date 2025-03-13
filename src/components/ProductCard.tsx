@@ -50,6 +50,9 @@ const ProductCard = ({ product, index = 0, onAddToCart }: ProductCardProps) => {
       }
       
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      
+      // Dispatch custom event to notify header about cart changes
+      window.dispatchEvent(new Event('cartUpdated'));
     } else {
       onAddToCart(product);
     }

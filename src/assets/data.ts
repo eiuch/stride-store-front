@@ -22,7 +22,7 @@ export const products: Product[] = [
     brand: "Nike",
     price: 12990,
     oldPrice: 15990,
-    image: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/a47b2f57-de79-4252-92ac-94cb5d1903a1/air-max-97-mens-shoes-XZ6gz4.png",
+    image: "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/9089e11a-1168-48ae-add0-a05dadfb2134/air-max-97-mens-shoes-LJmK45.png",
     category: "running",
     isNew: true,
     isFeatured: true,
@@ -49,7 +49,7 @@ export const products: Product[] = [
     name: "Old Skool",
     brand: "Vans",
     price: 6990,
-    image: "https://images.vans.com/is/image/VansEU/VN0A38G1P0S-HERO?$PDP-FULL-IMAGE$",
+    image: "https://images.vans.com/is/image/VansEU/VN000D3HY28-HERO?wid=800&hei=800&fmt=jpg&qlt=85,1&op_sharpen=0&resMode=sharp2&op_usm=1,1,1,0",
     category: "casual",
     isFeatured: true,
     rating: 4.7,
@@ -74,7 +74,7 @@ export const products: Product[] = [
     name: "Suede Classic",
     brand: "Puma",
     price: 7990,
-    image: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/374915/01/sv01/fnd/PNA/fmt/png/Suede-Classic-XXI-Sneakers",
+    image: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/374915/01/sv01/fnd/EEA/fmt/png",
     category: "casual",
     isFeatured: true,
     rating: 4.5,
@@ -88,7 +88,7 @@ export const products: Product[] = [
     brand: "New Balance",
     price: 8990,
     oldPrice: 10990,
-    image: "https://nb.scene7.com/is/image/NB/ml574evn_nb_02_i?$pdpflexf2$&wid=440&hei=440",
+    image: "https://nb.scene7.com/is/image/NB/u574laa_nb_02_i?$pdpflexf2$&qlt=80&fmt=webp&wid=440&hei=440",
     category: "lifestyle",
     isNew: true,
     rating: 4.7,
@@ -101,7 +101,7 @@ export const products: Product[] = [
     name: "Blazer Mid '77",
     brand: "Nike",
     price: 9990,
-    image: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/i1-0d30c028-358f-4629-95de-b813e68e023a/blazer-mid-77-vintage-mens-shoes-nw30B2.png",
+    image: "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/f45cec26-24b3-4621-ad9f-667e06c58d8e/blazer-mid-77-vintage-mens-shoes-nw30B2.png",
     category: "lifestyle",
     rating: 4.8,
     sizes: [40, 41, 42, 43, 44, 45],
@@ -114,7 +114,7 @@ export const products: Product[] = [
     brand: "Reebok",
     price: 7990,
     oldPrice: 9990,
-    image: "https://assets.reebok.com/images/h_840,f_auto,q_auto:sensitive,fl_lossy/d4b4707c4dda4e3cbb83aae300be6840_9366/Classic_Leather_Shoes_White_49799_01_standard.jpg",
+    image: "https://assets.reebok.com/images/w_600,f_auto,q_auto/4354df5e0e774de5a3f9aa64014397a3_9366/Classic_Leather_Shoes_White_2232.jpg",
     category: "lifestyle",
     rating: 4.6,
     sizes: [39, 40, 41, 42, 43, 44, 45],
@@ -124,13 +124,13 @@ export const products: Product[] = [
 ];
 
 export const brands = [
-  { id: 1, name: "Nike", logo: "https://www.transparentpng.com/thumb/nike-logo/JBnF8Z-nike-logo-free-download-transparent.png" },
-  { id: 2, name: "Adidas", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/800px-Adidas_Logo.svg.png" },
-  { id: 3, name: "Puma", logo: "https://logos-world.net/wp-content/uploads/2020/04/Puma-Logo-700x394.png" },
-  { id: 4, name: "New Balance", logo: "https://1000logos.net/wp-content/uploads/2017/05/New-Balance-logo.png" },
-  { id: 5, name: "Vans", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Vans-logo.svg/2560px-Vans-logo.svg.png" },
+  { id: 1, name: "Nike", logo: "https://1000logos.net/wp-content/uploads/2021/11/Nike-Logo.png" },
+  { id: 2, name: "Adidas", logo: "https://1000logos.net/wp-content/uploads/2019/07/Adidas-Logo-1991.jpg" },
+  { id: 3, name: "Puma", logo: "https://1000logos.net/wp-content/uploads/2017/05/PUMA-logo.jpg" },
+  { id: 4, name: "New Balance", logo: "https://1000logos.net/wp-content/uploads/2018/10/New-Balance-logo.jpg" },
+  { id: 5, name: "Vans", logo: "https://1000logos.net/wp-content/uploads/2021/04/Vans-logo.png" },
   { id: 6, name: "Converse", logo: "https://1000logos.net/wp-content/uploads/2021/04/Converse-logo.png" },
-  { id: 7, name: "Reebok", logo: "https://cdn.freebiesupply.com/logos/large/2x/reebok-logo-png-transparent.png" }
+  { id: 7, name: "Reebok", logo: "https://1000logos.net/wp-content/uploads/2017/05/Reebok-logo.jpg" }
 ];
 
 export const categories = [

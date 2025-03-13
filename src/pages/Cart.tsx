@@ -63,6 +63,9 @@ const Cart = () => {
     
     setCartItems(updatedItems);
     localStorage.setItem('cartItems', JSON.stringify(updatedItems));
+    
+    // Dispatch cart updated event
+    window.dispatchEvent(new Event('cartUpdated'));
   };
   
   // Remove item from cart
@@ -71,6 +74,9 @@ const Cart = () => {
     setCartItems(updatedItems);
     localStorage.setItem('cartItems', JSON.stringify(updatedItems));
     toast.success('Товар удален из корзины');
+    
+    // Dispatch cart updated event
+    window.dispatchEvent(new Event('cartUpdated'));
   };
   
   // Apply promo code
