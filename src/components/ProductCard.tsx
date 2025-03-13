@@ -15,6 +15,7 @@ interface ProductCardProps {
 const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('ru-RU', {
@@ -23,6 +24,9 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       maximumFractionDigits: 0,
     }).format(price);
   };
+
+  // Fallback image in case the product image is missing or fails to load
+  const fallbackImage = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80";
 
   return (
     <motion.div
@@ -36,18 +40,22 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       <div className="overflow-hidden rounded-2xl bg-secondary/40 aspect-[4/5] mb-4">
         <Link to={`/product/${product.id}`} className="block h-full w-full relative">
           {/* Loading state */}
-          <div className={cn("absolute inset-0 bg-gray-100 animate-pulse", isImageLoaded ? "opacity-0" : "opacity-100")} />
+          <div className={cn("absolute inset-0 bg-gray-100 animate-pulse", isImageLoaded && !imageError ? "opacity-0" : "opacity-100")} />
           
           {/* Product image */}
           <img
-            src={product.image}
+            src={product.image || fallbackImage}
             alt={product.name}
             className={cn(
               "h-full w-full object-cover transition-all duration-500",
               isHovered ? "scale-105" : "scale-100",
-              isImageLoaded ? "opacity-100" : "opacity-0"
+              isImageLoaded && !imageError ? "opacity-100" : "opacity-0"
             )}
             onLoad={() => setIsImageLoaded(true)}
+            onError={() => {
+              setImageError(true);
+              setIsImageLoaded(true);
+            }}
           />
           
           {/* Tags */}

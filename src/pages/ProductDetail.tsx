@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState(products.find(p => p.id === id));
+  const [product, setProduct] = useState(products.find(p => p.id.toString() === id));
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [mainImage, setMainImage] = useState(product?.image || '');
@@ -27,7 +27,7 @@ const ProductDetail = () => {
 
   // Find product and related products
   useEffect(() => {
-    const currentProduct = products.find(p => p.id === id);
+    const currentProduct = products.find(p => p.id.toString() === id);
     setProduct(currentProduct);
     
     if (currentProduct) {
