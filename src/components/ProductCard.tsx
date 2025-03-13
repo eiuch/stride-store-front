@@ -6,13 +6,15 @@ import { Heart, ShoppingBag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Product } from '@/assets/data';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 interface ProductCardProps {
   product: Product;
   index?: number;
+  onAddToCart?: (product: Product) => void;
 }
 
-const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
+const ProductCard = ({ product, index = 0, onAddToCart }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -27,6 +29,35 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
 
   // Fallback image in case the product image is missing or fails to load
   const fallbackImage = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80";
+
+  const handleAddToCart = () => {
+    // If no onAddToCart prop, show toast
+    if (!onAddToCart) {
+      toast.success(`${product.name} добавлен в корзину`);
+      
+      // Add to localStorage
+      const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+      const existingItemIndex = cartItems.findIndex((item: any) => item.id === product.id);
+      
+      if (existingItemIndex >= 0) {
+        cartItems[existingItemIndex].quantity += 1;
+      } else {
+        cartItems.push({
+          id: product.id,
+          quantity: 1,
+          size: product.sizes[Math.floor(product.sizes.length / 2)].toString()
+        });
+      }
+      
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    } else {
+      onAddToCart(product);
+    }
+  };
+
+  const handleAddToWishlist = () => {
+    toast.success(`${product.name} добавлен в избранное`);
+  };
 
   return (
     <motion.div
@@ -78,11 +109,17 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
             isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           )}>
             <div className="flex gap-2 px-4">
-              <Button size="sm" className="rounded-full bg-white/90 text-foreground hover:bg-white">
+              <Button size="sm" className="rounded-full bg-white/90 text-foreground hover:bg-white" onClick={(e) => {
+                e.preventDefault();
+                handleAddToWishlist();
+              }}>
                 <Heart className="w-4 h-4 mr-1" />
                 <span className="text-xs">В избранное</span>
               </Button>
-              <Button size="sm" className="rounded-full bg-primary/90 hover:bg-primary">
+              <Button size="sm" className="rounded-full bg-primary/90 hover:bg-primary" onClick={(e) => {
+                e.preventDefault();
+                handleAddToCart();
+              }}>
                 <ShoppingBag className="w-4 h-4 mr-1" />
                 <span className="text-xs">В корзину</span>
               </Button>

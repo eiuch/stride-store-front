@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -60,7 +59,7 @@ const ProductDetail = () => {
   }
 
   // Sample sizes for the product
-  const availableSizes = ['36', '37', '38', '39', '40', '41', '42', '43', '44', '45'];
+  const availableSizes = product.sizes.map(size => size.toString());
   
   // Sample images (using main image for demo)
   const productImages = [
@@ -79,8 +78,24 @@ const ProductDetail = () => {
       return;
     }
     
+    // Add to localStorage
+    const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    const existingItemIndex = cartItems.findIndex((item: any) => 
+      item.id === product.id && item.size === selectedSize
+    );
+    
+    if (existingItemIndex >= 0) {
+      cartItems[existingItemIndex].quantity += quantity;
+    } else {
+      cartItems.push({
+        id: product.id,
+        quantity: quantity,
+        size: selectedSize
+      });
+    }
+    
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
     toast.success(`${product.name} добавлен в корзину`);
-    // Here you would add the product to the cart
   };
   
   const addToWishlist = () => {

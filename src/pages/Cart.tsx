@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -17,11 +18,15 @@ interface CartItem {
 }
 
 const Cart = () => {
-  // Sample cart data (normally would come from a context or state management)
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    { id: 1, quantity: 1, size: '42' },
-    { id: 3, quantity: 2, size: '41' },
-  ]);
+  // Load cart items from localStorage
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  
+  useEffect(() => {
+    const storedCartItems = localStorage.getItem('cartItems');
+    if (storedCartItems) {
+      setCartItems(JSON.parse(storedCartItems));
+    }
+  }, []);
   
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
@@ -49,17 +54,22 @@ const Cart = () => {
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity < 1) return;
     
-    setCartItems(prev => prev.map(item => {
+    const updatedItems = cartItems.map(item => {
       if (item.id === id) {
         return { ...item, quantity: newQuantity };
       }
       return item;
-    }));
+    });
+    
+    setCartItems(updatedItems);
+    localStorage.setItem('cartItems', JSON.stringify(updatedItems));
   };
   
   // Remove item from cart
   const removeItem = (id: number) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
+    const updatedItems = cartItems.filter(item => item.id !== id);
+    setCartItems(updatedItems);
+    localStorage.setItem('cartItems', JSON.stringify(updatedItems));
     toast.success('Товар удален из корзины');
   };
   
